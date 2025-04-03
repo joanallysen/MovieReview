@@ -41,7 +41,7 @@ h2{
 }
 
 
-.header{
+.hero{
     width: 100%;
     min-height: 70vh;
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
@@ -118,3 +118,113 @@ section.movie-galery{
     display: none;
 }
 
+/* Santosh Tab and Stuff */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(65, 40, 40);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    transition: transform 0.4s ease, opacity 0.3s ease;
+}
+
+header img {
+    width: 2rem;
+    height: auto;
+    margin: 0.5rem;
+    border-radius: 15px;;
+}
+
+.content {
+    margin-top: 3.5rem;
+    margin-bottom: 3.5rem;
+    padding: 1rem;
+    line-height: 1.6;
+}
+
+footer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.374);
+    padding: 10px;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    z-index: 1000;
+    transition: transform 0.4s ease, opacity 0.3s ease;
+}
+
+footer img {
+    height: 30px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+footer img:hover {
+    transform: scale(1.1);
+}
+
+/* Animation for elements */
+.fade-in {
+    animation: fadeIn 0.5s forwards;
+}
+
+.fade-out {
+    animation: fadeOut 0.5s forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+/* INFO PAGE */
+
+
+.info-container {
+    max-width: 80%;
+    margin: auto;
+}
+
+.movie-card {
+text-align: center;
+margin-top: 20px;
+}
+
+.image-placeholder {
+width: 100%;
+height: 200px;
+background-color: #d3d3d3;
+border: 2px solid #ccc; /* Adding border */
+border-radius: 7px;
+box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Adding shadow */
+}
+
+img{
+    width:100%;
+    height:auto;
+}
+
+.ratings p {
+margin: 5px;
+}
+
+.synopsis p {
+text-align: justify;
+}

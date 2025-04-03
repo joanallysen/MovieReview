@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0,max-scale=1.0,min-scale=1.0, user-scrollable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +12,13 @@
     <title>Document</title>
 </head>
 <body>
-    <section class="header">
+    <header id="header">
+        <a href="home.html"><img src="logo.svg" alt="Logo"></a>
+        
+        <a href="watchlist.html"><img src="profile.svg" alt="Profile"></a>
+    </header>
+    
+    <section class="hero">
         
 
         <div class="title-box">
@@ -19,12 +26,14 @@
             <button class="title-btn">Search</button>
         </div>
     </section>
+    
     <section class="movie-galery">
         
         <h2 class="scroll-title">Featured Films</h2>
         <div class="scroll-container">
             <div class="item">
-                <img src="img/tp.png" alt="">
+                <a href="info.html"><img src="img/tp.png" alt=""></a>
+                
                 <p>Movie</p>
             </div>
             <div class="item">
@@ -72,7 +81,14 @@
 
     </section>
     
-    <script src="script.js"></script>
     
+    
+    <footer id="footer">
+        <a href="home.html"><img src="img/home.svg" alt="Home" ></a>
+        <a href="search.html"><img src="img/search.svg" alt="Search"></a>
+        <a href="watchlist.html"><img src="img/watchlist.svg" alt="Watchlist"></a>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
