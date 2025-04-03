@@ -1,5 +1,7 @@
 let lastScrollTop = 0;
-const header = document.getElementById("header");
+
+const nav = document.getElementById("header");
+
 const footer = document.getElementById("footer");
 let scrollTimer = null;
 let isScrollingDown = false;
@@ -24,8 +26,9 @@ window.addEventListener("scroll", function() {
         // Scrolling DOWN: hide header and footer
         if (!isScrollingDown) {
             isScrollingDown = true;
-            header.style.transform = "translateY(-100%)";
-            header.style.opacity = "0";
+
+            nav.style.transform = "translateY(-100%)";
+            nav.style.opacity = "0";
             footer.style.transform = "translateY(100%)";
             footer.style.opacity = "0";
         }
@@ -33,8 +36,9 @@ window.addEventListener("scroll", function() {
         // Scrolling UP: show header and footer
         if (isScrollingDown) {
             isScrollingDown = false;
-            header.style.transform = "translateY(0)";
-            header.style.opacity = "1";
+
+            nav.style.transform = "translateY(0)";
+            nav.style.opacity = "1";
             footer.style.transform = "translateY(0)";
             footer.style.opacity = "1";
         }
@@ -44,8 +48,9 @@ window.addEventListener("scroll", function() {
     scrollTimer = setTimeout(function() {
         // When scrolling stops, always show the header and footer
         if (currentScroll <= 50) { // Near the top of the page
-            header.style.transform = "translateY(0)";
-            header.style.opacity = "1";
+            nav.style.transform = "translateY(0)";
+            nav.style.opacity = "1";
+
         }
         
         // Always show footer near the bottom of the page
