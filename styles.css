@@ -1,0 +1,120 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root{
+    --fs-title: 28px;
+    --fs-h1: 24px;
+    --fs-h2: 20px;  
+    --fs-h3: 18px;
+    --fs-h4: 16px; 
+    --fs-button: 20px;
+    --fs-p: 16px;
+
+    --fs-btn: 20px;
+
+    --fs-sub: 40px;
+    --fs-label: 18px;
+
+    --fw-main: 300;
+    --fw-title: 600;
+    --ff-main: "Nunito Sans", sans-serif;
+}
+
+html{
+    scroll-behavior: smooth;
+}
+
+
+h1{
+    font-family: var(--ff-main);
+    font-weight: var(--fw-main);
+    font-size: var(--fs-h1);
+}
+
+h2{
+    font-family: var(--ff-main);
+    font-weight: var(--fw-main);
+    font-size: var(--fs-h2);
+}
+
+
+.header{
+    width: 100%;
+    min-height: 70vh;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url(img/tp.png);
+
+    background-position: center;
+    background-size: cover;
+}
+
+.title-box{
+    position: absolute;
+    top: 36%;
+    left: 50%;
+    width: 80%;
+    transform: translate(-50%, -50%);
+
+    text-align: center;
+}
+
+
+
+h1.title{
+    text-align: center;
+    font-weight: var(--fw-title);
+    font-size: var(--fs-title);
+    color: white;
+    margin-bottom: 0.8rem;
+}
+
+button.title-btn{
+    padding: 12px 24px;
+    border-radius: 5px;
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+    font-size: var(--fs-btn);
+
+}
+
+section.movie-galery{
+    padding-top: 8%;
+    padding-left: 4%;
+}
+
+.scroll-title{
+    margin-top: 4%;;
+}
+
+.scroll-container{
+    display: flex;
+    width: 100%;
+    overflow-x: scroll;
+}
+
+.scroll-container::-webkit-scrollbar{
+    display:none;
+}
+
+.item{
+    flex-shrink: 0;
+    margin: 0 1%;
+}
+
+.item img{
+    max-width: 150px;
+    max-height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+
+
+.posters-carousel::-webkit-scrollbar{
+    display: none;
+}
+
