@@ -1,6 +1,7 @@
+// NAVIGATION FADE IN AND FADE OUT
 let lastScrollTop = 0;
-const nav = document.getElementById("header");
-const footer = document.getElementById("footer");
+const header = document.getElementById('header');
+const navBottom = document.getElementById("nav-bottom");
 let scrollTimer = null;
 let isScrollingDown = false;
 
@@ -24,19 +25,19 @@ window.addEventListener("scroll", function() {
         // Scrolling DOWN: hide header and footer
         if (!isScrollingDown) {
             isScrollingDown = true;
-            nav.style.transform = "translateY(-100%)";
-            nav.style.opacity = "0";
-            footer.style.transform = "translateY(100%)";
-            footer.style.opacity = "0";
+            header.style.transform = "translateY(-100%)";
+            header.style.opacity = "0";
+            navBottom.style.transform = "translateY(100%)";
+            navBottom.style.opacity = "0";
         }
     } else {
         // Scrolling UP: show header and footer
         if (isScrollingDown) {
             isScrollingDown = false;
-            nav.style.transform = "translateY(0)";
-            nav.style.opacity = "1";
-            footer.style.transform = "translateY(0)";
-            footer.style.opacity = "1";
+            header.style.transform = "translateY(0)";
+            header.style.opacity = "1";
+            navBottom.style.transform = "translateY(0)";
+            navBottom.style.opacity = "1";
         }
     }
     
@@ -44,15 +45,15 @@ window.addEventListener("scroll", function() {
     scrollTimer = setTimeout(function() {
         // When scrolling stops, always show the header and footer
         if (currentScroll <= 50) { // Near the top of the page
-            nav.style.transform = "translateY(0)";
-            nav.style.opacity = "1";
+            header.style.transform = "translateY(0)";
+            header.style.opacity = "1";
         }
         
         // Always show footer near the bottom of the page
         const bottomPosition = document.body.scrollHeight - window.innerHeight - 50;
         if (currentScroll >= bottomPosition) {
-            footer.style.transform = "translateY(0)";
-            footer.style.opacity = "1";
+            navBottom.style.transform = "translateY(0)";
+            navBottom.style.opacity = "1";
         }
     }, 200);
     
@@ -70,3 +71,9 @@ footerIcons.forEach(icon => {
         this.classList.remove("fade-in");
     });
 });
+
+
+
+
+
+
