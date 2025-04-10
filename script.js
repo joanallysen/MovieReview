@@ -347,5 +347,25 @@ function closeMovieDetails() {
     movieDetails.style.display = 'none';
 }
 
+// Add movie to local storage, get watchlist, add movie, set watchlist back to normal.
+function addMovieToWatchlist(movie){
+    let watchlist = json.parse(localStorage.getItem('watchlist')) || [];
+    watchlist.push(movie);
+    localStorage.setItem('watchlist', JSON.stringify(watchlist));
+}
+
+function getWatchlist(){
+    return JSON.parse(localStorage.getItem('watchlist')) || [];
+}
+
+function renderWatchList(){
+    let watchlistContainer = document.getElementById("watchlistContainer");
+    let watchlist = getWatchlist();
+    watchlist.forEach((movie) =>{
+        renderMovieCard(movie, watchListContainer)
+    })
+    
+}
+
 // Initialize app when DOM is loaded
 document.addEventListener('DOMContentLoaded', init);

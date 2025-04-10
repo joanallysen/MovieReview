@@ -5,6 +5,8 @@
     --background-dark: #141414;
     --background-light: #181818;
     --overlay-color: rgba(0, 0, 0, 0.6);
+
+    
 }
 
 * {
@@ -418,3 +420,12 @@ body {
         height: 225px;
     }
 }
+
+/* WATCHLIST STYLE */
+grid-container{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 80%;
+    margin: auto;
+}
+
