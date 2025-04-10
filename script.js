@@ -91,8 +91,12 @@ const trendingMovies = document.getElementById('trendingMovies');
 const popularMovies = document.getElementById('popularMovies');
 const topRatedMovies = document.getElementById('topRatedMovies');
 const playBannerBtn = document.getElementById('playBannerBtn');
+const infoBannerBtn = document.getElementById('infoBannerBtn');
 const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
+const movieDetails = document.getElementById('movieDetails');
+const infoContainer = document.getElementById('infoContainer');
+const closeDetailsBtn = document.getElementById('closeDetailsBtn');
 
 // Loaders
 const trendingLoader = document.getElementById('trendingLoader');
@@ -126,6 +130,9 @@ function init() {
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') handleSearch();
     });
+
+    closeDetailsBtn.addEventListener('click', closeMovieDetails);
+    infoBannerBtn.addEventListener('click', () => showMovieDetails(featuredMovie));
 }
 
 // Fetch movies from API
@@ -161,6 +168,8 @@ async function fetchMovies(endpoint, container, loader) {
 function renderMovieCard(movie, container) {
     const card = document.createElement('div');
     card.className = 'movie-card';
+
+    card.addEventListener('click', () => showMovieDetails(movie));
    
     const rating = Math.round(movie.vote_average * 10) / 10;
    
@@ -246,6 +255,93 @@ function fetchSearchResults(searchSection, searchLoader, query){
    
     // Scroll to search results
     searchSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Show movie details page
+function showMovieDetails(movie) {
+    if (!movie){
+        console.error("No movie data are provided to showMovieDetails");
+        return;  
+    } 
+
+    // Fetch additional movie details if needed
+    fetch(`${BASE_URL}/movie/${movie.id}?api_key=${API_KEY}`)
+        .then(response => response.json())
+        .then(movieData => {
+            // Create movie details HTML
+            infoContainer.innerHTML = `
+                <h1>${movie.title}</h1>
+                <div class="movie-card">
+                    <img src="${movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : '/api/placeholder/300/450'}" alt="${movie.title}">
+                    <div class="ratings">
+                        <p>IMDb: ${movie.vote_average}/10 (${movie.vote_count} votes)</p>
+                        <p>Release Date: ${movie.release_date || 'N/A'}</p>
+                        <p>Genre: ${movieData.genres ? movieData.genres.map(g => g.name).join(', ') : 'N/A'}</p>
+                        <p>Runtime: ${movieData.runtime ? `${movieData.runtime} minutes` : 'N/A'}</p>
+                        
+                        <div class="action-buttons">
+                            <button class="play-btn" id="detailsPlayBtn">Play</button>
+                            <button class="watchlist-btn">Add to Watchlist</button>
+                        </div>
+                    </div>
+                </div>
+                <section class="synopsis">
+                    <h2>Synopsis</h2>
+                    <p>${movie.overview || 'No synopsis available.'}</p>
+                </section>
+            `;
+            
+            // Add event listener to play button
+            const detailsPlayBtn = document.getElementById('detailsPlayBtn');
+            if (detailsPlayBtn) {
+                detailsPlayBtn.addEventListener('click', () => {
+                    closeMovieDetails();
+                    playMovie(movie);
+                });
+            }
+            
+            // Show movie details
+            movieDetails.style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error fetching movie details:', error);
+            // Show basic details if fetch fails
+            infoContainer.innerHTML = `
+                <h1>${movie.title}</h1>
+                <div class="movie-card">
+                    <img src="${movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : '/api/placeholder/300/450'}" alt="${movie.title}">
+                    <div class="ratings">
+                        <p>IMDb: ${movie.vote_average}/10 (${movie.vote_count} votes)</p>
+                        
+                        <div class="action-buttons">
+                            <button class="play-btn" id="detailsPlayBtn">Play</button>
+                            <button class="watchlist-btn">Add to Watchlist</button>
+                        </div>
+                    </div>
+                </div>
+                <section class="synopsis">
+                    <h2>Synopsis</h2>
+                    <p>${movie.overview || 'No synopsis available.'}</p>
+                </section>
+            `;
+            
+            // Add event listener to play button
+            const detailsPlayBtn = document.getElementById('detailsPlayBtn');
+            if (detailsPlayBtn) {
+                detailsPlayBtn.addEventListener('click', () => {
+                    closeMovieDetails();
+                    playMovie(movie);
+                });
+            }
+            
+            // Show movie details
+            movieDetails.style.display = 'block';
+        });
+}
+
+// Close movie details
+function closeMovieDetails() {
+    movieDetails.style.display = 'none';
 }
 
 // Initialize app when DOM is loaded
