@@ -131,7 +131,7 @@ function init() {
         if (e.key === 'Enter') handleSearch();
     });
 
-    closeDetailsBtn.addEventListener('click', closeMovieDetails);
+    closeDetailsBtn.addEventListener('click', () => closeMovieDetails());
     infoBannerBtn.addEventListener('click', () => showMovieDetails(featuredMovie));
 }
 
@@ -273,6 +273,7 @@ function showMovieDetails(movie) {
         .then(movieData => {
             // Create movie details HTML
             infoContainer.innerHTML = `
+            
                 <h1>${movie.title}</h1>
                 <div class="movie-card">
                     <img src="${movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : 'https://placehold.co/150x225/808080/FFFFFF.png?text=No+Image'}" alt="${movie.title}">
@@ -283,8 +284,8 @@ function showMovieDetails(movie) {
                         <p>Runtime: ${movieData.runtime ? `${movieData.runtime} minutes` : 'N/A'}</p>
                         
                         <div class="action-buttons">
-                            <button class="play-btn" id="detailsPlayBtn">Play</button>
-                            <button class="watchlist-btn">Add to Watchlist</button>
+                            <button class="play-btn-info" id="detailsPlayBtn">Play</button>
+                            <button class="watchlist-btn-info">Add to Watchlist</button>
                         </div>
                     </div>
                 </div>
@@ -338,12 +339,13 @@ function showMovieDetails(movie) {
             }
             
             // Show movie details
-            movieDetails.style.display = 'block';
+            movieDetafils.style.display = 'block';
         });
 }
 
 // Close movie details
 function closeMovieDetails() {
+    console.log("Close info");
     movieDetails.style.display = 'none';
 }
 
