@@ -173,8 +173,11 @@ function renderMovieCard(movie, container) {
    
     const rating = Math.round(movie.vote_average * 10) / 10;
    
+    // unfortunately, the image is still static adjusted for mobile only if error.
     card.innerHTML = `
-        <img src="${movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : '/api/placeholder/200/300'}" alt="${movie.title}">
+        <img src="${movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : 'https://placehold.co/150x225/808080/FFFFFF.png?text=No+Image'}" 
+        alt="${movie.title}">
+
         <div class="rating">${rating}</div>
         <div class="movie-info">
             <h3 class="movie-title">${movie.title}</h3>
