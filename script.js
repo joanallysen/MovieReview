@@ -275,7 +275,7 @@ function showMovieDetails(movie) {
             infoContainer.innerHTML = `
                 <h1>${movie.title}</h1>
                 <div class="movie-card">
-                    <img src="${movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : '/api/placeholder/300/450'}" alt="${movie.title}">
+                    <img src="${movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : 'https://placehold.co/150x225/808080/FFFFFF.png?text=No+Image'}" alt="${movie.title}">
                     <div class="ratings">
                         <p>IMDb: ${movie.vote_average}/10 (${movie.vote_count} votes)</p>
                         <p>Release Date: ${movie.release_date || 'N/A'}</p>
@@ -312,7 +312,7 @@ function showMovieDetails(movie) {
             infoContainer.innerHTML = `
                 <h1>${movie.title}</h1>
                 <div class="movie-card">
-                    <img src="${movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : '/api/placeholder/300/450'}" alt="${movie.title}">
+                    <img src="${movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : 'https://placehold.co/150x225/808080/FFFFFF.png?text=No+Image'}" alt="${movie.title}">
                     <div class="ratings">
                         <p>IMDb: ${movie.vote_average}/10 (${movie.vote_count} votes)</p>
                         
