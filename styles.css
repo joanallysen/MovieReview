@@ -290,6 +290,7 @@ body {
 
 .nav-bottom img {
     height: 30px;
+    width: 30px;
     cursor: pointer;
     transition: transform 0.2s ease;
     filter: brightness(0) invert(1);
@@ -448,10 +449,67 @@ body {
 }
 
 /* WATCHLIST STYLE */
-grid-container{
+.watchlist-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    width: 80%;
-    margin: auto;
+    gap: 20px;
+    width: 90%;
+    max-width: 800px;
+    margin: 0 auto;
+    overflow-y: auto;
+    max-height: 75vh; /* Set a max height to enable scrolling */
+    padding: 10px;
 }
 
+/* Style the scrollbar for the watchlist */
+.watchlist-grid::-webkit-scrollbar {
+    width: 8px;
+}
+
+.watchlist-grid::-webkit-scrollbar-track {
+    background: var(--background-light);
+    border-radius: 10px;
+}
+
+.watchlist-grid::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    border: 2px solid var(--background-light);
+}
+
+/* Make the movie cards in the watchlist slightly different */
+.watchlist-grid .movie-card {
+    min-width: auto;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+@media (max-width: 768px) {
+    .watchlist-grid {
+        width: 95%;
+        gap: 15px;
+        max-height: 68vh;
+    }
+    
+    .watchlist-grid .movie-card img {
+        height: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .watchlist-grid .movie-card img {
+        height: 180px;
+    }
+}
+
+.remove-btn{
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    order: none;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: auto;
+    margin-top: 10px;
+    display: block;
+}

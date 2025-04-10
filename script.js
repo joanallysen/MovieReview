@@ -108,6 +108,13 @@ let featuredMovie = null;
 
 // Initialize the app
 function init() {
+    closeDetailsBtn.addEventListener('click', () => closeMovieDetails());
+
+    if (window.location.pathname.includes('watchlist.html')) {
+        console.log("On watchlist page");
+        renderWatchList();
+        return
+    }
     // Show loaders
     trendingLoader.style.display = 'block';
     popularLoader.style.display = 'block';
@@ -131,8 +138,15 @@ function init() {
         if (e.key === 'Enter') handleSearch();
     });
 
-    closeDetailsBtn.addEventListener('click', () => closeMovieDetails());
+    
     infoBannerBtn.addEventListener('click', () => showMovieDetails(featuredMovie));
+    
+    if (window.location.pathname === '/watchlist.html') {
+        renderWatchList();
+    } else{
+        console.log("not on watchlist");
+    }
+    
 }
 
 // Fetch movies from API
@@ -285,7 +299,7 @@ function showMovieDetails(movie) {
                         
                         <div class="action-buttons">
                             <button class="play-btn-info" id="detailsPlayBtn">Play</button>
-                            <button class="watchlist-btn-info">Add to Watchlist</button>
+                            <button class="watchlist-btn-info" id="addMovieToWatchlistBtn">Add to Watchlist</button>
                         </div>
                     </div>
                 </div>
@@ -298,9 +312,21 @@ function showMovieDetails(movie) {
             // Add event listener to play button
             const detailsPlayBtn = document.getElementById('detailsPlayBtn');
             if (detailsPlayBtn) {
+                console.log("playplayplay");
                 detailsPlayBtn.addEventListener('click', () => {
-                    closeMovieDetails();
-                    playMovie(movie);
+                });
+            }
+
+            const addMovieToWatchlistBtn = document.getElementById('addMovieToWatchlistBtn');
+            if (addMovieToWatchlistBtn){
+                addMovieToWatchlistBtn.addEventListener('click', () => {
+                    console.log(movie.title, "added to watchlist!");
+                    addMovieToWatchlist(movie);
+
+                    addMovieToWatchlistBtn.style.backgroundColor = 'white';
+                    addMovieToWatchlistBtn.style.color = 'black';  
+                    addMovieToWatchlistBtn.textContent = 'Added';  
+                    addMovieToWatchlistBtn.disabled = true; 
                 });
             }
             
@@ -351,22 +377,77 @@ function closeMovieDetails() {
 
 // Add movie to local storage, get watchlist, add movie, set watchlist back to normal.
 function addMovieToWatchlist(movie){
-    let watchlist = json.parse(localStorage.getItem('watchlist')) || [];
-    watchlist.push(movie);
-    localStorage.setItem('watchlist', JSON.stringify(watchlist));
+    if (movie && movie.title && movie.poster_path) {  // Add validation to check if movie is valid
+        let watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
+        
+        // Check if the movie is already in the watchlist (optional, to prevent duplicates)
+        if (!watchlist.some(existingMovie => existingMovie.title === movie.title)) {
+            watchlist.push(movie);
+            localStorage.setItem('watchlist', JSON.stringify(watchlist));
+            console.log(`${movie.title} added to the watchlist!`);
+        } else {
+            console.log(`${movie.title} is already in the watchlist.`);
+        }
+    } else {
+        console.error("Invalid movie object:", movie);  // Log an error if movie is not valid
+    }
 }
 
 function getWatchlist(){
     return JSON.parse(localStorage.getItem('watchlist')) || [];
 }
 
-function renderWatchList(){
-    let watchlistContainer = document.getElementById("watchlistContainer");
-    let watchlist = getWatchlist();
-    watchlist.forEach((movie) =>{
-        renderMovieCard(movie, watchListContainer)
-    })
+function renderWatchList() {
+    console.log("WATCHLIST OPENED");
+    const watchlistContainer = document.getElementById("watchlistContainer");
     
+    // Clear the container first
+    if (watchlistContainer) {
+        watchlistContainer.innerHTML = '';
+        
+        const watchlist = getWatchlist();
+        console.log("Watchlist items:", watchlist.length);
+        
+        if (watchlist.length === 0) {
+            watchlistContainer.innerHTML = '<p style="color: #fff; text-align: center; padding: 20px; grid-column: span 2;">Your watchlist is empty.</p>';
+        } else {
+            // Create a wrapper div for empty state messaging
+            const emptyStateDiv = document.createElement('div');
+            emptyStateDiv.style.gridColumn = 'span 2';
+            emptyStateDiv.style.display = 'none';
+            watchlistContainer.appendChild(emptyStateDiv);
+            
+            // Add the movies to the grid
+            watchlist.forEach((movie) => {
+                renderMovieCard(movie, watchlistContainer);
+            });
+            
+            // Add a "remove from watchlist" button to each movie card
+            const movieCards = watchlistContainer.querySelectorAll('.movie-card');
+            movieCards.forEach((card, index) => {
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-btn';
+                removeBtn.textContent = 'Remove';
+                
+                
+                removeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent the movie details from opening
+                    
+                    // Remove from watchlist
+                    let watchlist = getWatchlist();
+                    watchlist.splice(index, 1);
+                    localStorage.setItem('watchlist', JSON.stringify(watchlist));
+                    
+                    // Re-render the watchlist
+                    renderWatchList();
+                });
+                
+                card.querySelector('.movie-info').appendChild(removeBtn);
+            });
+        }
+    } else {
+        console.error("Watchlist container not found!");
+    }
 }
 
 // Initialize app when DOM is loaded
