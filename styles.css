@@ -363,10 +363,11 @@ body {
 
 .action-buttons{
     display: flex;
-    justify-content: space-between;
-    margin: 1rem;
+    justify-content:space-around;
+    margin: 0.5rem;
 }
 
+/* This is the add to watchlist */
 .watchlist-btn-info {
     background-color: var(--primary-color);
     color: var(--text-color);
@@ -488,17 +489,6 @@ body {
     .watchlist-grid {
         width: 95%;
         gap: 15px;
-        max-height: 68vh;
-    }
-    
-    .watchlist-grid .movie-card img {
-        height: 200px;
-    }
-}
-
-@media (max-width: 480px) {
-    .watchlist-grid .movie-card img {
-        height: 180px;
     }
 }
 

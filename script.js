@@ -1,4 +1,13 @@
-// NAVIGATION FADE IN AND FADE OUT
+// Content
+/*
+1. NAVIGATION JS
+2. GET AND RENDER MOVIE CONFIGURATION
+3. SEARCH BAR CONFIGURATION
+4. MOVIE DETAILS CONFIGURATION
+5. WATCHLIST EDITOR
+*/
+
+// NAVIGATION JS
 let lastScrollTop = 0;
 const header = document.getElementById('header');
 const navBottom = document.getElementById("nav-bottom");
@@ -75,7 +84,7 @@ footerIcons.forEach(icon => {
 
 
 
-
+// MOVIE CONFIGURATION
 
 // API configuration
 const API_KEY = '3fd2be6f0c70a2a598f084ddfb75487c'; // This is a public TMDB API key for demo purposes
@@ -140,13 +149,6 @@ function init() {
 
     
     infoBannerBtn.addEventListener('click', () => showMovieDetails(featuredMovie));
-    
-    if (window.location.pathname === '/watchlist.html') {
-        renderWatchList();
-    } else{
-        console.log("not on watchlist");
-    }
-    
 }
 
 // Fetch movies from API
@@ -179,25 +181,66 @@ async function fetchMovies(endpoint, container, loader) {
 }
 
 // Render a movie card
-function renderMovieCard(movie, container) {
+function renderMovieCard(movie, container, isWatchlistPage = false) {
     const card = document.createElement('div');
     card.className = 'movie-card';
-
+    
+    // We'll still add the click event to show details
     card.addEventListener('click', () => showMovieDetails(movie));
    
     const rating = Math.round(movie.vote_average * 10) / 10;
    
-    // unfortunately, the image is still static adjusted for mobile only if error.
-    card.innerHTML = `
-        <img src="${movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : 'https://placehold.co/150x225/808080/FFFFFF.png?text=No+Image'}" 
-        alt="${movie.title}">
-
-        <div class="rating">${rating}</div>
-        <div class="movie-info">
-            <h3 class="movie-title">${movie.title}</h3>
-            <p class="movie-year">${movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A'}</p>
-        </div>
-    `;
+    if (!isWatchlistPage) {
+        // Standard movie card
+        card.innerHTML = `
+            <img src="${movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : 'https://placehold.co/150x225/808080/FFFFFF.png?text=No+Image'}" 
+            alt="${movie.title}">
+            <div class="rating">${rating}</div>
+            <div class="movie-info">
+                <h3 class="movie-title">${movie.title}</h3>
+                <p class="movie-year">${movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A'}</p>
+            </div>
+        `;
+    } else {
+        // Watchlist card with remove button
+        card.innerHTML = `
+            <img src="${movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : 'https://placehold.co/150x225/808080/FFFFFF.png?text=No+Image'}" 
+            alt="${movie.title}">
+            <div class="rating">${rating}</div>
+            <div class="movie-info">
+                <h3 class="movie-title">${movie.title}</h3>
+                <p class="movie-year">${movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A'}</p>
+                <button class="remove-btn">Remove</button>
+            </div>
+        `;
+        
+        // Add event listener to the remove button, to make sure the DOM is rendered first
+        setTimeout(() => {
+            const removeBtn = card.querySelector('.remove-btn');
+            if (removeBtn) {
+                removeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent movie details from showing
+                    
+                    // Remove from watchlist
+                    removeFromWatchlist(movie.id);
+                    
+                    // Remove card with animation
+                    card.style.opacity = '0';
+                    setTimeout(() => {
+                        card.remove();
+                        
+                        // Check if watchlist is now empty
+                        if (getWatchlist().length === 0) {
+                            const watchlistContainer = document.getElementById("watchlistContainer");
+                            if (watchlistContainer) {
+                                watchlistContainer.innerHTML = '<p style="color: #fff; text-align: center; padding: 20px; grid-column: span 2;">Your watchlist is empty.</p>';
+                            }
+                        }
+                    }, 300);
+                });
+            }
+        }, 0);
+    }
    
     container.appendChild(card);
 }
@@ -209,8 +252,8 @@ function setBannerMovie(movie) {
     bannerDescription.textContent = movie.overview;
 }
 
+// SEARCH BAR CONFIGURATION
 let searchContainerExist = false;
-
 function handleSearch() {
     console.log("Searching!");
     const query = searchInput.value.trim();
@@ -274,6 +317,7 @@ function fetchSearchResults(searchSection, searchLoader, query){
     searchSection.scrollIntoView({ behavior: 'smooth' });
 }
 
+// MOVIE DETAILS CONFIGURATION
 // Show movie details page
 function showMovieDetails(movie) {
     if (!movie){
@@ -281,13 +325,16 @@ function showMovieDetails(movie) {
         return;  
     } 
 
+    // Check if movie is in watchlist
+    const watchlist = getWatchlist();
+    const isInWatchlist = watchlist.some(item => item.id === movie.id);
+
     // Fetch additional movie details if needed
     fetch(`${BASE_URL}/movie/${movie.id}?api_key=${API_KEY}`)
         .then(response => response.json())
         .then(movieData => {
             // Create movie details HTML
             infoContainer.innerHTML = `
-            
                 <h1>${movie.title}</h1>
                 <div class="movie-card">
                     <img src="${movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : 'https://placehold.co/150x225/808080/FFFFFF.png?text=No+Image'}" alt="${movie.title}">
@@ -299,7 +346,9 @@ function showMovieDetails(movie) {
                         
                         <div class="action-buttons">
                             <button class="play-btn-info" id="detailsPlayBtn">Play</button>
-                            <button class="watchlist-btn-info" id="addMovieToWatchlistBtn">Add to Watchlist</button>
+                            <button class="watchlist-btn-info" id="toggleWatchlistBtn">
+                                ${isInWatchlist ? 'Remove from Watchlist' : 'Add to Watchlist'}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -312,21 +361,23 @@ function showMovieDetails(movie) {
             // Add event listener to play button
             const detailsPlayBtn = document.getElementById('detailsPlayBtn');
             if (detailsPlayBtn) {
-                console.log("playplayplay");
                 detailsPlayBtn.addEventListener('click', () => {
+                    // Play movie functionality would go here. not usable as of currently
                 });
             }
 
-            const addMovieToWatchlistBtn = document.getElementById('addMovieToWatchlistBtn');
-            if (addMovieToWatchlistBtn){
-                addMovieToWatchlistBtn.addEventListener('click', () => {
-                    console.log(movie.title, "added to watchlist!");
-                    addMovieToWatchlist(movie);
+            // Style the watchlist button based on current status
+            const toggleWatchlistBtn = document.getElementById('toggleWatchlistBtn');
+            if (toggleWatchlistBtn) {
+                // Set initial button style based on watchlist status
+                if (isInWatchlist) {
+                    toggleWatchlistBtn.style.backgroundColor = '#333';
+                    toggleWatchlistBtn.style.color = '#fff';
+                    toggleWatchlistBtn.style.fontSize = '12px';
+                }
 
-                    addMovieToWatchlistBtn.style.backgroundColor = 'white';
-                    addMovieToWatchlistBtn.style.color = 'black';  
-                    addMovieToWatchlistBtn.textContent = 'Added';  
-                    addMovieToWatchlistBtn.disabled = true; 
+                toggleWatchlistBtn.addEventListener('click', () => {
+                    toggleMovieInWatchlist(movie, toggleWatchlistBtn);
                 });
             }
             
@@ -335,7 +386,9 @@ function showMovieDetails(movie) {
         })
         .catch(error => {
             console.error('Error fetching movie details:', error);
-            // Show basic details if fetch fails
+            // Show basic details if fetch fails with similar watchlist functionality
+            const isInWatchlist = watchlist.some(item => item.id === movie.id);
+            
             infoContainer.innerHTML = `
                 <h1>${movie.title}</h1>
                 <div class="movie-card">
@@ -344,8 +397,10 @@ function showMovieDetails(movie) {
                         <p>IMDb: ${movie.vote_average}/10 (${movie.vote_count} votes)</p>
                         
                         <div class="action-buttons">
-                            <button class="play-btn" id="detailsPlayBtn">Play</button>
-                            <button class="watchlist-btn">Add to Watchlist</button>
+                            <button class="play-btn-info" id="detailsPlayBtn">Play</button>
+                            <button class="watchlist-btn-info" id="toggleWatchlistBtn">
+                                ${isInWatchlist ? 'Remove from Watchlist' : 'Add to Watchlist'}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -355,28 +410,74 @@ function showMovieDetails(movie) {
                 </section>
             `;
             
-            // Add event listener to play button
+            // Add event listeners (same as above)
             const detailsPlayBtn = document.getElementById('detailsPlayBtn');
             if (detailsPlayBtn) {
                 detailsPlayBtn.addEventListener('click', () => {
-                    closeMovieDetails();
-                    playMovie(movie);
+                    // Play functionality
                 });
             }
             
-            // Show movie details
-            movieDetafils.style.display = 'block';
+            const toggleWatchlistBtn = document.getElementById('toggleWatchlistBtn');
+            if (toggleWatchlistBtn) {
+                if (isInWatchlist) {
+                    toggleWatchlistBtn.style.backgroundColor = '#333';
+                    toggleWatchlistBtn.style.color = '#fff';
+                    toggleWatchlistBtn.style.fontSize = '12px';
+                }
+                
+                toggleWatchlistBtn.addEventListener('click', () => {
+                    toggleMovieInWatchlist(movie, toggleWatchlistBtn);
+                });
+            }
+            
+            movieDetails.style.display = 'block';
         });
 }
-
 // Close movie details
 function closeMovieDetails() {
     console.log("Close info");
     movieDetails.style.display = 'none';
 }
+// Toggle Watchlist button
+function toggleMovieInWatchlist(movie, button) {
+    if (!movie || !movie.id) {
+        console.error("Invalid movie object for watchlist toggle");
+        return;
+    }
+    
+    let watchlist = getWatchlist();
+    const movieIndex = watchlist.findIndex(item => item.id === movie.id);
+    
+    if (movieIndex === -1) {
+        // Movie not in watchlist - add it
+        addToWatchlist(movie);
+        
+        // Update button
+        button.textContent = 'Remove from Watchlist';
+        button.style.backgroundColor = '#333';
+        button.style.fontSize = '12px';
+        
+        console.log(`${movie.title} added to watchlist`);
+    } else {
+        removeFromWatchlist(movie.id);
 
+        // Rerender watchlist
+        renderWatchList();
+        // Update button
+        button.textContent = 'Add to Watchlist';
+        button.style.backgroundColor = 'var(--primary-color)';
+        button.style.fontSize = '16px';
+        
+        console.log(`${movie.title} removed from watchlist`);
+    }
+}
+
+
+
+// WATCHLIST EDITOR
 // Add movie to local storage, get watchlist, add movie, set watchlist back to normal.
-function addMovieToWatchlist(movie){
+function addToWatchlist(movie){
     if (movie && movie.title && movie.poster_path) {  // Add validation to check if movie is valid
         let watchlist = JSON.parse(localStorage.getItem('watchlist')) || [];
         
@@ -391,6 +492,13 @@ function addMovieToWatchlist(movie){
     } else {
         console.error("Invalid movie object:", movie);  // Log an error if movie is not valid
     }
+}
+// Function to remove a movie from watchlist by ID
+function removeFromWatchlist(movieId) {
+    let watchlist = getWatchlist();
+    const updatedWatchlist = watchlist.filter(movie => movie.id !== movieId);
+    localStorage.setItem('watchlist', JSON.stringify(updatedWatchlist));
+    console.log(`Movie ID ${movieId} removed from watchlist`);
 }
 
 function getWatchlist(){
@@ -411,44 +519,23 @@ function renderWatchList() {
         if (watchlist.length === 0) {
             watchlistContainer.innerHTML = '<p style="color: #fff; text-align: center; padding: 20px; grid-column: span 2;">Your watchlist is empty.</p>';
         } else {
-            // Create a wrapper div for empty state messaging
-            const emptyStateDiv = document.createElement('div');
-            emptyStateDiv.style.gridColumn = 'span 2';
-            emptyStateDiv.style.display = 'none';
-            watchlistContainer.appendChild(emptyStateDiv);
+            // Add CSS for smooth removal animation
+            const style = document.createElement('style');
+            style.textContent = `
+                .movie-card {
+                    transition: opacity 0.3s ease;
+                }
+            `;
+            document.head.appendChild(style);
             
             // Add the movies to the grid
             watchlist.forEach((movie) => {
-                renderMovieCard(movie, watchlistContainer);
-            });
-            
-            // Add a "remove from watchlist" button to each movie card
-            const movieCards = watchlistContainer.querySelectorAll('.movie-card');
-            movieCards.forEach((card, index) => {
-                const removeBtn = document.createElement('button');
-                removeBtn.className = 'remove-btn';
-                removeBtn.textContent = 'Remove';
-                
-                
-                removeBtn.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Prevent the movie details from opening
-                    
-                    // Remove from watchlist
-                    let watchlist = getWatchlist();
-                    watchlist.splice(index, 1);
-                    localStorage.setItem('watchlist', JSON.stringify(watchlist));
-                    
-                    // Re-render the watchlist
-                    renderWatchList();
-                });
-                
-                card.querySelector('.movie-info').appendChild(removeBtn);
+                renderMovieCard(movie, watchlistContainer, true); // Pass true to indicate watchlist page
             });
         }
     } else {
         console.error("Watchlist container not found!");
     }
 }
-
 // Initialize app when DOM is loaded
 document.addEventListener('DOMContentLoaded', init);
