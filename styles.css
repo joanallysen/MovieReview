@@ -549,19 +549,7 @@ body {
 }
 
 /* About Us Content Styles */
-h1 {
-    font-size: 36px;
-    color: var(--primary-color);
-    margin-bottom: 30px;
-    text-align: center;
-}
 
-section {
-    background-color: var(--background-light);
-    padding: 30px;
-    border-radius: 8px;
-    margin-bottom: 30px;
-}
 
 h2 {
     font-size: 24px;
