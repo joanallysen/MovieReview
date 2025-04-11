@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieFlix - Your Watchlist</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header" id="header">
+        <a href="index.html" class="logo">MovieFlix</a>
+        <a href=""><img class="icon" src="img/profile.svg" alt="profile"></a>
+    </header>
+
+    <div style="margin-top: 4rem; padding: 20px;">
+        <h1 style="text-align: center; margin-bottom: 30px;">Your Watchlist</h1>
+        <div class="watchlist-grid" id="watchlistContainer">
+            <!-- Watchlist items will be loaded here -->
+        </div>
+    </div>
+
+    <div class="movie-details" id="movieDetails">
+        <button class="close-btn" id="closeDetailsBtn">&times;</button>
+        <div class="info-container" id="infoContainer">
+            <!-- Movie details will be populated here -->
+        </div>
+    </div>
+
+    <nav class="nav-bottom" id="nav-bottom">
+        <a href="home.html"><img src="img/home.svg" alt="Home"></a>
+        <a href="watchlist.html"><img src="img/watchlist.svg" alt="Watchlist"></a>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+</html>
