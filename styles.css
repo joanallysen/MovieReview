@@ -644,3 +644,78 @@ p {
         grid-template-columns: 1fr;
     }
 }
+
+.intro-title{
+    text-align: center;
+    font-size: 48px;
+    color: var(--primary-color);
+}
+
+.intro-title-box{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 25%;
+}
+
+/* Intro */
+
+.intro-title-box{
+    position: absolute;
+    top: 40%;
+    left:50%;
+    transform: translate(-50%, -40%);
+    text-align: center;
+    width: 90%;
+}
+
+.intro-title{
+    font-size: 64px;
+    color: var(--primary-color);
+}
+
+.intro-subtitle{
+    font-size: 18px;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+.intro-btn{
+    margin-top: 80%;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    padding: 12px 25px;
+    border-radius: 4px;
+
+    font-size: 16px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+.transition {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background-color: red;
+    z-index: 1000;
+    transition: all 0.6s ease;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+  }
+  
+  /* When expanding */
+.transition.expand {
+width: 200vw;
+height: 200vh;
+border-radius: 0;
+top: 0;
+left: 0;
+transform: none;
+}
+

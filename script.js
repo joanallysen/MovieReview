@@ -117,13 +117,18 @@ let featuredMovie = null;
 
 // Initialize the app
 function init() {
-    closeDetailsBtn.addEventListener('click', () => closeMovieDetails());
-
     if (window.location.pathname.includes('watchlist.html')) {
         console.log("On watchlist page");
         renderWatchList();
         return
+    } else if(window.location.pathname.includes('intro.html')){
+        console.log("On intro page");
+        return;
     }
+    closeDetailsBtn.addEventListener('click', () => closeMovieDetails());
+
+    
+
     // Show loaders
     trendingLoader.style.display = 'block';
     popularLoader.style.display = 'block';
@@ -667,3 +672,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+function playTransitionTo(url) {
+    const transition = document.getElementById('transition');
+    transition.classList.add('expand');
+  
+    setTimeout(() => {
+      window.location.href = url;
+    }, 600); // match transition duration
+  }
