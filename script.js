@@ -539,3 +539,131 @@ function renderWatchList() {
 }
 // Initialize app when DOM is loaded
 document.addEventListener('DOMContentLoaded', init);
+
+// javascript function for the AboutUs page
+function showAboutUs() {
+    // Create the about us overlay if it doesn't exist
+    if (!document.getElementById('aboutUsOverlay')) {
+        // Create the main container
+        const aboutUsOverlay = document.createElement('div');
+        aboutUsOverlay.id = 'aboutUsOverlay';
+        
+        // Create the close button
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'close-btn';
+        closeBtn.innerHTML = '&times;';
+        closeBtn.onclick = closeAboutUs;
+        
+        // Create the content container
+        const aboutUsContent = document.createElement('div');
+        aboutUsContent.className = 'info-container';
+        
+        // Create the about us content
+        aboutUsContent.innerHTML = `
+            <h1>About MovieFlix</h1>
+            
+            <section>
+                <h2>Our Mission</h2>
+                <p>At MovieFlix, we believe everyone deserves access to exceptional entertainment. Our mission is to provide a seamless streaming experience with a vast library of movies across all genres, from blockbuster hits to indie gems.</p>
+                <p>We're committed to leveraging cutting-edge technology to deliver the highest quality streaming service, ensuring you never miss a moment of your favorite films.</p>
+            </section>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <span>📚</span>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Vast Library</h3>
+                        <p>Access thousands of movies across every genre imaginable, from action-packed blockbusters to thought-provoking documentaries.</p>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <span>✨</span>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Premium Quality</h3>
+                        <p>Enjoy crystal-clear HD and 4K streaming with adaptive quality that adjusts to your internet connection.</p>
+                    </div>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <span>📱</span>
+                    </div>
+                    <div class="feature-content">
+                        <h3>Watch Anywhere</h3>
+                        <p>Stream on your TV, computer, tablet, or smartphone—your membership travels with you.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <section style="text-align: center;">
+                <h2>Meet Our Team</h2>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="team-photo"></div>
+                        <h3 class="team-name">KEVIN JOHN DOWD</h3>
+                        <p class="team-role">Founder & CEO</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="team-photo"></div>
+                        <h3 class="team-name">SANTOSH ADHIKARI</h3>
+                        <p class="team-role">Chief Technology Officer</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="team-photo"></div>
+                        <h3 class="team-name">JOHN ALLYSEN</h3>
+                        <p class="team-role">Content Director</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="team-photo"></div>
+                        <h3 class="team-name">VISHESH GROVER</h3>
+                        <p class="team-role">UX Designer</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section style="text-align: center;">
+                <h2>Join MovieFlix Today</h2>
+                <p>Start streaming today and discover why millions of movie enthusiasts choose MovieFlix for their entertainment needs.</p>
+                <button class="cta-button">Start Your Free Trial</button>
+            </section>
+        `;
+        
+        // Append elements to the DOM
+        aboutUsOverlay.appendChild(closeBtn);
+        aboutUsOverlay.appendChild(aboutUsContent);
+        document.body.appendChild(aboutUsOverlay);
+    } else {
+        // Show the existing overlay if it's already created
+        document.getElementById('aboutUsOverlay').style.display = 'block';
+    }
+    
+    // Disable body scrolling when overlay is shown
+    document.body.style.overflow = 'hidden';
+}
+
+// Function to close About Us overlay
+function closeAboutUs() {
+    const aboutUsOverlay = document.getElementById('aboutUsOverlay');
+    if (aboutUsOverlay) {
+        aboutUsOverlay.style.display = 'none';
+    }
+    // Re-enable body scrolling
+    document.body.style.overflow = 'auto';
+}
+
+// Initialize About Us functionality when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listener to the About Us link
+    const aboutLink = document.querySelector('.about-link');
+    if (aboutLink) {
+        aboutLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            showAboutUs();
+        });
+    }
+});
