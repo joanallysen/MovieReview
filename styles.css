@@ -506,22 +506,6 @@ body {
 }
 
 
-/* About Section css */
-:root {
-    --background-dark: #121212;
-    --background-light: #222;
-    --primary-color: #e50914;
-    --text-color: #fff;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: var(--background-dark);
-    color: var(--text-color);
-    margin: 0;
-    padding: 20px;
-}
-
 
 /* About Us link button */
 .about-link {
