@@ -670,14 +670,13 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             showAboutUs();
         });
-    }
+    };
 });
 
-function playTransitionTo(url) {
-    const transition = document.getElementById('transition');
-    transition.classList.add('expand');
-  
-    setTimeout(() => {
-      window.location.href = url;
-    }, 600); // match transition duration
-  }
+function transitionTo(url){
+    const overlay = document.querySelector(".transition-overlay");
+    overlay.style.animation = 'slideIn 0.5s ease-in-out';
+    setTimeout(()=>{
+        window.location.href = url;
+    }, 500);
+}
