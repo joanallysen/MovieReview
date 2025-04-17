@@ -644,3 +644,76 @@ p {
         grid-template-columns: 1fr;
     }
 }
+
+.intro-title{
+    text-align: center;
+    font-size: 48px;
+    color: var(--primary-color);
+}
+
+.intro-title-box{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 25%;
+}
+
+/* Intro */
+
+.intro-title-box{
+    position: absolute;
+    top: 40%;
+    left:50%;
+    transform: translate(-50%, -40%);
+    text-align: center;
+    width: 90%;
+}
+
+.intro-title{
+    font-size: 64px;
+    color: var(--primary-color);
+}
+
+.intro-subtitle{
+    font-size: 18px;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+.intro-btn{
+    margin-top: 80%;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    padding: 12px 25px;
+    border-radius: 4px;
+
+    font-size: 16px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+.transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0; /* Start covering the screen on load */
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    z-index: 9999;
+    pointer-events: none;
+    animation: slideOut 0.1s ease-out forwards;
+}
+
+@keyframes slideOut {
+    from { left: 0; }
+    to { left: -100%; }
+}
+
+@keyframes slideIn{
+    from {left: -100%;}
+    to {left:0;}
+}
