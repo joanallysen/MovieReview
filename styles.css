@@ -702,10 +702,10 @@ p {
     left: 0; /* Start covering the screen on load */
     width: 100%;
     height: 100%;
-    background-color: red;
+    background-color: black;
     z-index: 9999;
     pointer-events: none;
-    animation: slideOut 0.5s ease-out forwards;
+    animation: slideOut 0.1s ease-out forwards;
 }
 
 @keyframes slideOut {

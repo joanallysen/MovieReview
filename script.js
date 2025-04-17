@@ -117,6 +117,7 @@ let featuredMovie = null;
 
 // Initialize the app
 function init() {
+    closeDetailsBtn.addEventListener('click', () => closeMovieDetails());
     if (window.location.pathname.includes('watchlist.html')) {
         console.log("On watchlist page");
         renderWatchList();
@@ -125,7 +126,7 @@ function init() {
         console.log("On intro page");
         return;
     }
-    closeDetailsBtn.addEventListener('click', () => closeMovieDetails());
+    
 
     
 
@@ -675,7 +676,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function transitionTo(url){
     const overlay = document.querySelector(".transition-overlay");
-    overlay.style.animation = 'slideIn 0.5s ease-in-out';
+    overlay.style.animation = 'slideIn 0.1s ease-in-out';
     setTimeout(()=>{
         window.location.href = url;
     }, 500);
