@@ -577,7 +577,7 @@ function showAboutUs() {
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <span>📚</span>
+                        <img class="feature-icon" src="img/vast-library.jpg" alt="Vast Library">
                     </div>
                     <div class="feature-content">
                         <h3>Vast Library</h3>
@@ -586,22 +586,22 @@ function showAboutUs() {
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <span>✨</span>
+                     <div class="feature-icon">
+                        <img class="feature-icon" src="img/premium-quality.jpg" alt="Premium Quality">
                     </div>
                     <div class="feature-content">
-                        <h3>Premium Quality</h3>
-                        <p>Enjoy crystal-clear HD and 4K streaming with adaptive quality that adjusts to your internet connection.</p>
+                        <h3>Stay Updated on Trending Movies</h3>
+                        <p>Never miss out on trending films! We keep you in the loop with the latest movie releases, popular picks, and community favorites so you can always stay ahead in the world of cinema.</p>
                     </div>
                 </div>
                 
                 <div class="feature-card">
-                    <div class="feature-icon">
-                        <span>📱</span>
+                  <div class="feature-icon">
+                        <img class="feature-icon" src="img/watch-anywhere.jpg" alt="Premium Quality">
                     </div>
                     <div class="feature-content">
-                        <h3>Watch Anywhere</h3>
-                        <p>Stream on your TV, computer, tablet, or smartphone—your membership travels with you.</p>
+                        <h3>Build Your Watchlist</h3>
+                        <p>Easily save your favorite movies and create a personalized watchlist! Keep track of the films you want to see, and make sure you never miss out on the titles that catch your eye.</p>
                     </div>
                 </div>
             </div>
@@ -610,22 +610,29 @@ function showAboutUs() {
                 <h2>Meet Our Team</h2>
                 <div class="team-grid">
                     <div class="team-member">
-                        <div class="team-photo"></div>
+                        <div>
+                          <img class="team-photo" src="Kevin.jpg" alt="Kevin"></div>
                         <h3 class="team-name">KEVIN JOHN DOWD</h3>
                         <p class="team-role">Founder & CEO</p>
                     </div>
                     <div class="team-member">
-                        <div class="team-photo"></div>
+                        <div >
+                          <img class="team-photo" src="img/santosh.jpg" alt="santosh">
+                        </div>
                         <h3 class="team-name">SANTOSH ADHIKARI</h3>
                         <p class="team-role">Chief Technology Officer</p>
                     </div>
                     <div class="team-member">
-                        <div class="team-photo"></div>
+                        <div >
+                          <img class="team-photo" src="img/joan.jpg" alt="joan">
+                        </div>
                         <h3 class="team-name">JOHN ALLYSEN</h3>
                         <p class="team-role">Content Director</p>
                     </div>
                     <div class="team-member">
-                        <div class="team-photo"></div>
+                        <div >
+                          <img class="team-photo" src="img/vishesh.jpg" alt="vishesh">
+                        </div>
                         <h3 class="team-name">VISHESH GROVER</h3>
                         <p class="team-role">UX Designer</p>
                     </div>
@@ -671,8 +678,129 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             showAboutUs();
         });
-    };
+
+    }
 });
+
+//play-btn working 
+// Function to open YouTube video in an iframe when play button is clicked
+// DEMO
+// function setupPlayButtons() {
+//     // Get all elements with the "play-btn" class
+//     const playButtons = document.querySelectorAll('.play-btn, .play-btn-info,.detailsPlayBtn');
+    
+//     // YouTube video ID (extracted from the URL)
+//     const youtubeVideoId = 'M4bjDV1OC0I';
+    
+//     // Add click event listener to each play button
+//     playButtons.forEach(button => {
+//         button.addEventListener('click', function(e) {
+//             e.preventDefault(); // Prevent default action if it's a link
+//             console.log('Play button clicked! Opening YouTube video in iframe...');
+            
+//             // Create a video overlay container if it doesn't exist
+//             let videoOverlay = document.getElementById('videoOverlay');
+//             if (!videoOverlay) {
+//                 videoOverlay = document.createElement('div');
+//                 videoOverlay.id = 'videoOverlay';
+//                 videoOverlay.className = 'video-overlay';
+//                 document.body.appendChild(videoOverlay);
+                
+//                 // Add styles for the overlay
+//                 const style = document.createElement('style');
+//                 style.textContent = `
+//                     .video-overlay {
+//                         position: fixed;
+//                         top: 0;
+//                         left: 0;
+//                         width: 100%;
+//                         height: 100%;
+//                         background-color: rgba(0, 0, 0, 0.9);
+//                         z-index: 2000;
+//                         display: flex;
+//                         justify-content: center;
+//                         align-items: center;
+//                         flex-direction: column;
+//                     }
+//                     .video-container {
+//                         width: 80%;
+//                         max-width: 800px;
+//                         position: relative;
+//                         padding-bottom: 45%; /* 16:9 aspect ratio */
+//                     }
+//                     .video-container iframe {
+//                         position: absolute;
+//                         top: 0;
+//                         left: 0;
+//                         width: 100%;
+//                         height: 100%;
+//                         border: none;
+//                     }
+//                     .close-video {
+//                         position: absolute;
+//                         top: 20px;
+//                         right: 20px;
+//                         color: #fff;
+//                         font-size: 30px;
+//                         cursor: pointer;
+//                         background: var(--primary-color);
+//                         border: none;
+//                         border-radius: 50%;
+//                         width: 40px;
+//                         height: 40px;
+//                         display: flex;
+//                         align-items: center;
+//                         justify-content: center;
+//                     }
+//                 `;
+//                 document.head.appendChild(style);
+//             }
+            
+//             // Clear any existing content
+//             videoOverlay.innerHTML = '';
+            
+//             // Create close button
+//             const closeButton = document.createElement('button');
+//             closeButton.className = 'close-video';
+//             closeButton.innerHTML = '&times;';
+//             closeButton.addEventListener('click', function() {
+//                 videoOverlay.style.display = 'none';
+//                 // Pause the video when closed (by reloading iframe src)
+//                 const iframe = document.querySelector('#videoOverlay iframe');
+//                 if (iframe) {
+//                     const src = iframe.src;
+//                     iframe.src = src;
+//                 }
+//             });
+            
+//             // Create video container
+//             const videoContainer = document.createElement('div');
+//             videoContainer.className = 'video-container';
+            
+//             // Create iframe for YouTube video
+//             const iframe = document.createElement('iframe');
+//             iframe.src = `https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1`;
+//             iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+//             iframe.allowFullscreen = true;
+            
+//             // Append elements
+//             videoContainer.appendChild(iframe);
+//             videoOverlay.appendChild(closeButton);
+//             videoOverlay.appendChild(videoContainer);
+            
+//             // Show the overlay
+//             videoOverlay.style.display = 'flex';
+//         });
+//     });
+    
+//     console.log('Play buttons initialized!');
+// }
+
+// Call the function when the DOM is fully loaded
+// document.addEventListener('DOMContentLoaded', setupPlayButtons);
+
+//    };
+//});
 
 function transitionTo(url){
     const overlay = document.querySelector(".transition-overlay");
@@ -681,3 +809,4 @@ function transitionTo(url){
         window.location.href = url;
     }, 500);
 }
+
