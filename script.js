@@ -596,8 +596,8 @@ function showAboutUs() {
                 </div>
                 
                 <div class="feature-card">
-                  <div class="feature-icon">
-                        <img class="feature-icon" src="img/watch-anywhere.jpg" alt="Premium Quality">
+                    <div class="feature-icon">
+                        <img class="feature-icon" src="img/watchlist.png" alt="Premium Quality">
                     </div>
                     <div class="feature-content">
                         <h3>Build Your Watchlist</h3>
@@ -611,27 +611,27 @@ function showAboutUs() {
                 <div class="team-grid">
                     <div class="team-member">
                         <div>
-                          <img class="team-photo" src="Kevin.jpg" alt="Kevin"></div>
+                            <img class="team-photo" src="Kevin.jpg" alt="Kevin"></div>
                         <h3 class="team-name">KEVIN JOHN DOWD</h3>
                         <p class="team-role">Founder & CEO</p>
                     </div>
                     <div class="team-member">
                         <div >
-                          <img class="team-photo" src="img/santosh.jpg" alt="santosh">
+                            <img class="team-photo" src="img/santosh.jpg" alt="santosh">
                         </div>
                         <h3 class="team-name">SANTOSH ADHIKARI</h3>
                         <p class="team-role">Chief Technology Officer</p>
                     </div>
                     <div class="team-member">
                         <div >
-                          <img class="team-photo" src="img/joan.jpg" alt="joan">
+                            <img class="team-photo" src="img/joan.jpg" alt="joan">
                         </div>
                         <h3 class="team-name">JOHN ALLYSEN</h3>
                         <p class="team-role">Content Director</p>
                     </div>
                     <div class="team-member">
-                        <div >
-                          <img class="team-photo" src="img/vishesh.jpg" alt="vishesh">
+                        <div>
+                            <img class="team-photo" src="img/vishesh.jpg" alt="vishesh">
                         </div>
                         <h3 class="team-name">VISHESH GROVER</h3>
                         <p class="team-role">UX Designer</p>
@@ -641,7 +641,7 @@ function showAboutUs() {
             
             <section style="text-align: center;">
                 <h2>Join MovieFlix Today</h2>
-                <p>Start streaming today and discover why millions of movie enthusiasts choose MovieFlix for their entertainment needs.</p>
+                <p>Start streaming today and discover why millions of movie enthusiasts choose MovieFlix as their go to movie review website</p>
                 <button class="cta-button">Start Your Free Trial</button>
             </section>
         `;
