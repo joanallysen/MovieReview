@@ -60,6 +60,7 @@ body {
     width: 100%;
     margin:auto;
     margin-top: 1rem;
+    position: relative;
 }
 
 .search-bar input {
@@ -697,4 +698,27 @@ p {
 @keyframes slideIn{
     from {left: -100%;}
     to {left:0;}
+}
+
+.autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #222;
+    border: 1px solid #444;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.autocomplete-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    color: white;
+}
+
+.autocomplete-item:hover {
+    background-color: #333;
 }

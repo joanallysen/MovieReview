@@ -127,14 +127,13 @@ function init() {
         return;
     }
     
-
-    
+    setupSimpleAutoComplete();
 
     // Show loaders
     trendingLoader.style.display = 'block';
     popularLoader.style.display = 'block';
     topRatedLoader.style.display = 'block';
-   
+
     // Fetch movies for different categories
     fetchMovies('trending/movie/week', trendingMovies, trendingLoader)
         .then(() => fetchMovies('movie/popular', popularMovies, popularLoader))
@@ -146,7 +145,7 @@ function init() {
             }
         })
         .catch(error => console.error('Error initializing app:', error));
-       
+
     // Event listeners
     searchBtn.addEventListener('click', handleSearch);
     searchInput.addEventListener('keypress', (e) => {
@@ -163,19 +162,19 @@ async function fetchMovies(endpoint, container, loader) {
         const response = await fetch(`${BASE_URL}/${endpoint}?api_key=${API_KEY}`);
         const data = await response.json();
         console.log(data)
-       
+
         // Hide loader
         if (loader) loader.style.display = 'none';
-       
+
         // Clear container
         // container.innerHTML = ''; not sure what this do
-       
+
         // Choose a random movie for the banner from trending
         if (endpoint === 'trending/movie/week' && data.results.length > 0) {
             const randomIndex = Math.floor(Math.random() * Math.min(5, data.results.length));
             featuredMovie = data.results[randomIndex];
         }
-       
+
         // Render each movie
         data.results.forEach(movie => {
             renderMovieCard(movie, container);
@@ -264,7 +263,7 @@ function handleSearch() {
     console.log("Searching!");
     const query = searchInput.value.trim();
     if (!query) return;
-   
+
     // Create a loader for search results
     const searchLoader = document.createElement('div');
     searchLoader.className = 'loader';
@@ -280,18 +279,18 @@ function handleSearch() {
     searchResults.className = 'movie-row';
     searchResults.id = 'searchResults';
     searchResults.appendChild(searchLoader);
-   
+
     // Create a section for search results
     searchSection = document.createElement('section');
     searchSection.className = 'categories';
     searchSection.id = 'searchResultsSection';
     searchSection.innerHTML = `<h2 class="category-title">Search Results for "${query}"</h2>`;
     searchSection.appendChild(searchResults);
-   
+
     // Insert search results after the banner
     const categoriesSection = document.querySelector('.categories');
     categoriesSection.parentNode.insertBefore(searchSection, categoriesSection);
-   
+
     fetchSearchResults(searchSection, searchLoader, query);
 }
 
@@ -299,13 +298,14 @@ function fetchSearchResults(searchSection, searchLoader, query){
     fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`)
         .then(response => response.json())
         .then(data => {
+            console.log("SEARCHED DATA:", data);
             searchLoader.style.display = 'none';
-           
+
             if (data.results.length === 0) {
                 searchResults.innerHTML = '<p style="color: #aaa; padding: 20px;">No results found.</p>';
                 return;
             }
-           
+
             data.results.forEach(movie => {
                 renderMovieCard(movie, searchResults);
             });
@@ -315,10 +315,10 @@ function fetchSearchResults(searchSection, searchLoader, query){
             searchLoader.style.display = 'none';
             searchResults.innerHTML = '<p style="color: #aaa; padding: 20px;">Error searching movies. Please try again.</p>';
         });
-       
+
     // Clear search input
     searchInput.value = '';
-   
+
     // Scroll to search results
     searchSection.scrollIntoView({ behavior: 'smooth' });
 }
@@ -586,7 +586,7 @@ function showAboutUs() {
                 </div>
                 
                 <div class="feature-card">
-                     <div class="feature-icon">
+                    <div class="feature-icon">
                         <img class="feature-icon" src="img/premium-quality.jpg" alt="Premium Quality">
                     </div>
                     <div class="feature-content">
@@ -810,3 +810,69 @@ function transitionTo(url){
     }, 500);
 }
 
+function setupSimpleAutoComplete(){
+    const searchContainer = searchInput.parentElement;
+
+    const dropdown = document.createElement('div');
+    dropdown.id = 'autocompleteDropdown';
+    dropdown.className = 'autocomplete-dropdown';
+    searchContainer.appendChild(dropdown);
+
+
+    searchInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        
+        if (query.length > 0) {
+            fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                
+                dropdown.innerHTML = '';
+                
+                if (data.results && data.results.length > 0) {
+                    data.results.slice(0, 10).forEach(movie => {
+                    const item = document.createElement('div');
+                    item.className = 'autocomplete-item';
+                    item.textContent = movie.title;
+                    
+                    item.addEventListener('click', () => {
+                        searchInput.value = movie.title;
+                        dropdown.style.display = 'none';
+                    });
+                    
+                    dropdown.appendChild(item);
+                });
+                
+                    dropdown.style.display = 'block';
+                } else {
+                    dropdown.style.display = 'none';
+                }
+            })
+        .catch(error => {
+            console.error('Error fetching suggestions:', error);
+            dropdown.style.display = 'none';
+        });
+    } else {
+        dropdown.style.display = 'none';
+    }
+    });
+    
+    // Hide dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+    if (!searchContainer.contains(e.target)) {
+        dropdown.style.display = 'none';
+        }
+    });
+}
+
+// after opening the movie detail
+// save to local storage the movie.
+// later if user want to check they can easily see the title. And if hit the info will show up
+/*
+if (movie exist)
+    let historyList = json.parrse(localStorage.get history)
+    if (moive in history) no no no
+    movie push and remove the last one, so there's only like 10
+    watchlist.filter last or something
+
+*/
