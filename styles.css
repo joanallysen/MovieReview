@@ -634,7 +634,7 @@ p {
 }
 
 .intro-subtitle{
-    font-size: var(--fs-h3);
+    font-size: var(--fs-body);
     margin-bottom: 30px;
     line-height: 1.5;
 }
