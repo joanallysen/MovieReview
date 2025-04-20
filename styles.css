@@ -64,7 +64,7 @@ body {
 }
 
 .search-bar input {
-    width:80%;
+    width:70%;
     padding: 8px 15px;
     border: none;
     border-radius: 4px 0 0 4px;
@@ -345,17 +345,6 @@ body {
     object-fit: cover;
 }
 
-.close-btn{
-    position: absolute;
-    top: 60px;
-    right: 30px;
-    color: var(--text-color);
-    font-size: 32px;
-    cursor: pointer;
-    background: none;
-    border: none;
-}
-
 .ratings {
     padding: 20px;
     flex: 1;
@@ -432,7 +421,6 @@ body {
         height: 64vh;
         padding: 0 20px;
     }
-
 
     .categories {
         padding: 30px 20px;
@@ -530,8 +518,8 @@ body {
 
 .info-container {
     max-width: 1000px;
-    margin: 0 auto;
-    padding: 0 20px 40px;
+    margin: 15px;
+    padding: 0 10px 30px;
 }
 
 .close-btn {
@@ -629,19 +617,6 @@ p {
     cursor: pointer;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    #aboutUsOverlay .info-container {
-        margin: 15px;
-        padding: 0 10px 30px;
-    }
-    
-    .features-grid,
-    .team-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
 /* Intro */
 
 .intro-title{
@@ -721,4 +696,83 @@ p {
 
 .autocomplete-item:hover {
     background-color: #333;
+}
+
+/* HISTORY */
+/* History page specific styles */
+.history-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    width: 95%;
+    max-width: 800px;
+    margin: 0 auto;
+    overflow-y: auto;
+    max-height: 75vh;
+    padding: 10px;
+}
+
+.history-grid::-webkit-scrollbar {
+    width: 8px;
+}
+
+.history-grid::-webkit-scrollbar-track {
+    background: var(--background-light);
+    border-radius: 10px;
+}
+
+.history-grid::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    border: 2px solid var(--background-light);
+}
+
+/* Add timestamp for history items */
+.movie-timestamp {
+    font-size: 12px;
+    color: #888;
+    text-align: right;
+    margin-top: 5px;
+}
+
+/* Empty history message */
+.empty-message {
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    grid-column: span 2;
+    font-size: var(--fs-body);
+}
+
+/* Clear history button */
+.clear-history-btn {
+    background-color: #333;
+    color: var(--text-color);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: var(--fs-label);
+    cursor: pointer;
+    margin: 20px auto;
+    display: block;
+}
+
+.clear-history-btn:hover {
+    background-color: var(--primary-color);
+}
+
+
+#adultFilterBtn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    cursor: pointer;
+    margin-left: 5px;
+    transition: background-color 0.3s;
+}
+
+#adultFilterBtn.filter-active {
+    background-color: var(--background-dark);
 }

@@ -82,17 +82,12 @@ footerIcons.forEach(icon => {
 });
 
 
-
-
-// MOVIE CONFIGURATION
-
 // API configuration
 const API_KEY = '3fd2be6f0c70a2a598f084ddfb75487c'; // This is a public TMDB API key for demo purposes
 const BASE_URL = 'https://api.themoviedb.org/3'; // Information about the movie
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500'; // Image
 
 // DOM Elements
-// const header = document.getElementById('header');is already inside the Z
 const banner = document.getElementById('banner');
 const bannerTitle = document.getElementById('bannerTitle');
 const bannerDescription = document.getElementById('bannerDescription');
@@ -106,13 +101,14 @@ const searchBtn = document.getElementById('searchBtn');
 const movieDetails = document.getElementById('movieDetails');
 const infoContainer = document.getElementById('infoContainer');
 const closeDetailsBtn = document.getElementById('closeDetailsBtn');
-
+const toggleAdultFilterBtn = document.getElementById('adultFilterBtn');
 // Loaders
 const trendingLoader = document.getElementById('trendingLoader');
 const popularLoader = document.getElementById('popularLoader');
 const topRatedLoader = document.getElementById('topRatedLoader');
 
 // State
+let isAdultFilterEnabled = false;
 let featuredMovie = null;
 
 // Initialize the app
@@ -125,9 +121,22 @@ function init() {
     } else if(window.location.pathname.includes('intro.html')){
         console.log("On intro page");
         return;
+    } else if (window.location.pathname.includes('history.html')) {
+        console.log("On history page");
+        renderHistory();
+        return;
     }
     
     setupSimpleAutoComplete();
+
+    const aboutLink = document.querySelector('.about-link');
+    if (aboutLink) {
+        aboutLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            showAboutUs();
+        });
+
+    }
 
     // Show loaders
     trendingLoader.style.display = 'block';
@@ -152,7 +161,7 @@ function init() {
         if (e.key === 'Enter') handleSearch();
     });
 
-    
+    toggleAdultFilterBtn.addEventListener('click', toggleAdultFilter);
     infoBannerBtn.addEventListener('click', () => showMovieDetails(featuredMovie));
 }
 
@@ -257,70 +266,143 @@ function setBannerMovie(movie) {
     bannerDescription.textContent = movie.overview;
 }
 
-// SEARCH BAR CONFIGURATION
-let searchContainerExist = false;
 function handleSearch() {
     console.log("Searching!");
     const query = searchInput.value.trim();
     if (!query) return;
-
+    
     // Create a loader for search results
     const searchLoader = document.createElement('div');
     searchLoader.className = 'loader';
     searchLoader.style.display = 'block';
 
+    // Remove old search results if they exist
     const oldSearchSection = document.getElementById('searchResultsSection');
     if (oldSearchSection) {
         oldSearchSection.remove();
     }
 
     // Create a container for search results
-    searchResults = document.createElement('div');
+    const searchResults = document.createElement('div');
     searchResults.className = 'movie-row';
     searchResults.id = 'searchResults';
     searchResults.appendChild(searchLoader);
 
     // Create a section for search results
-    searchSection = document.createElement('section');
+    const searchSection = document.createElement('section');
     searchSection.className = 'categories';
     searchSection.id = 'searchResultsSection';
-    searchSection.innerHTML = `<h2 class="category-title">Search Results for "${query}"</h2>`;
+    
+    // Check if this is an actor search (if query starts with "actor:")
+    const isActorSearch = query.toLowerCase().startsWith("actor:");
+    let searchTitle = "";
+    
+    if (isActorSearch) {
+        const actorName = query.substring(6).trim(); // Remove "actor:" prefix
+        searchTitle = `Movies with ${actorName}`;
+        searchSection.innerHTML = `<h2 class="category-title">${searchTitle}</h2>`;
+    } else {
+        searchTitle = `Search Results for "${query}"`;
+        searchSection.innerHTML = `<h2 class="category-title">${searchTitle}</h2>`;
+    }
+    
     searchSection.appendChild(searchResults);
 
     // Insert search results after the banner
     const categoriesSection = document.querySelector('.categories');
     categoriesSection.parentNode.insertBefore(searchSection, categoriesSection);
 
-    fetchSearchResults(searchSection, searchLoader, query);
+    // Run the appropriate search based on the query type
+    if (isActorSearch) {
+        const actorName = query.substring(6).trim(); // Remove "actor:" prefix
+        searchByActor(actorName, searchResults, searchLoader);
+    } else {
+        searchByTitle(query, searchResults, searchLoader);
+    }
 }
 
-function fetchSearchResults(searchSection, searchLoader, query){
-    fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`)
+function searchByTitle(query, resultsContainer, loader) {
+    // Include adult filter parameter
+    const includeAdult = !isAdultFilterEnabled;
+    
+    fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&include_adult=${includeAdult}`)
         .then(response => response.json())
         .then(data => {
-            console.log("SEARCHED DATA:", data);
-            searchLoader.style.display = 'none';
-
-            if (data.results.length === 0) {
-                searchResults.innerHTML = '<p style="color: #aaa; padding: 20px;">No results found.</p>';
-                return;
-            }
-
-            data.results.forEach(movie => {
-                renderMovieCard(movie, searchResults);
-            });
+            displaySearchResults(data, resultsContainer, loader);
         })
         .catch(error => {
             console.error('Error searching movies:', error);
-            searchLoader.style.display = 'none';
-            searchResults.innerHTML = '<p style="color: #aaa; padding: 20px;">Error searching movies. Please try again.</p>';
+            loader.style.display = 'none';
+            resultsContainer.innerHTML = '<p style="color: #aaa; padding: 20px;">Error searching movies. Please try again.</p>';
         });
 
     // Clear search input
     searchInput.value = '';
 
     // Scroll to search results
-    searchSection.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('searchResultsSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+function searchByActor(actorName, resultsContainer, loader) {
+    // First search for the actor to get their ID
+    fetch(`${BASE_URL}/search/person?api_key=${API_KEY}&query=${encodeURIComponent(actorName)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.results && data.results.length > 0) {
+                // Get the first matching actor's ID
+                const actorId = data.results[0].id;
+                
+                // Then fetch movies with this actor
+                return fetch(`${BASE_URL}/person/${actorId}/movie_credits?api_key=${API_KEY}`);
+            } else {
+                throw new Error('Actor not found');
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Filter adult movies if filter is enabled
+            let movies = data.cast || [];
+            if (isAdultFilterEnabled) {
+                movies = movies.filter(movie => !movie.adult);
+            }
+            
+            // Create a data object that matches the structure expected by displaySearchResults
+            const formattedData = {
+                results: movies
+            };
+            
+            displaySearchResults(formattedData, resultsContainer, loader);
+        })
+        .catch(error => {
+            console.error('Error searching actor:', error);
+            loader.style.display = 'none';
+            resultsContainer.innerHTML = '<p style="color: #aaa; padding: 20px;">Actor not found or error searching. Please try again.</p>';
+        });
+
+    // Clear search input
+    searchInput.value = '';
+
+    // Scroll to search results
+    document.getElementById('searchResultsSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Common function to display search results 
+function displaySearchResults(data, resultsContainer, loader) {
+    console.log("SEARCH RESULTS:", data);
+    loader.style.display = 'none';
+
+    if (data.results.length === 0) {
+        resultsContainer.innerHTML = '<p style="color: #aaa; padding: 20px;">No results found.</p>';
+        return;
+    }
+
+    // Clear current results
+    resultsContainer.innerHTML = '';
+    
+    // Add all movies to results
+    data.results.forEach(movie => {
+        renderMovieCard(movie, resultsContainer);
+    });
 }
 
 // MOVIE DETAILS CONFIGURATION
@@ -331,6 +413,7 @@ function showMovieDetails(movie) {
         return;  
     } 
 
+    addToHistory(movie);
     // Check if movie is in watchlist
     const watchlist = getWatchlist();
     const isInWatchlist = watchlist.some(item => item.id === movie.id);
@@ -478,7 +561,24 @@ function toggleMovieInWatchlist(movie, button) {
         console.log(`${movie.title} removed from watchlist`);
     }
 }
-
+// Toggle adult filter button
+function toggleAdultFilter(){
+    isAdultFilterEnabled = !isAdultFilterEnabled;
+    
+    // Update button appearance
+    if (isAdultFilterEnabled) {
+        toggleAdultFilterBtn.classList.add('filter-active');
+        toggleAdultFilterBtn.textContent = "Adult: Off";
+    } else {
+        toggleAdultFilterBtn.classList.remove('filter-active');
+        toggleAdultFilterBtn.textContent = "Adult: On";
+    }
+    
+    // If there's an active search, refresh it with the new filter
+    if (searchInput.value.trim()) {
+        handleSearch();
+    }
+}
 
 
 // WATCHLIST EDITOR
@@ -543,9 +643,8 @@ function renderWatchList() {
         console.error("Watchlist container not found!");
     }
 }
-// Initialize app when DOM is loaded
-document.addEventListener('DOMContentLoaded', init);
 
+// ABOUT US FUNCTIONS
 // javascript function for the AboutUs page
 function showAboutUs() {
     // Create the about us overlay if it doesn't exist
@@ -669,139 +768,7 @@ function closeAboutUs() {
     document.body.style.overflow = 'auto';
 }
 
-// Initialize About Us functionality when the DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Add event listener to the About Us link
-    const aboutLink = document.querySelector('.about-link');
-    if (aboutLink) {
-        aboutLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            showAboutUs();
-        });
-
-    }
-});
-
-//play-btn working 
-// Function to open YouTube video in an iframe when play button is clicked
-// DEMO
-// function setupPlayButtons() {
-//     // Get all elements with the "play-btn" class
-//     const playButtons = document.querySelectorAll('.play-btn, .play-btn-info,.detailsPlayBtn');
-    
-//     // YouTube video ID (extracted from the URL)
-//     const youtubeVideoId = 'M4bjDV1OC0I';
-    
-//     // Add click event listener to each play button
-//     playButtons.forEach(button => {
-//         button.addEventListener('click', function(e) {
-//             e.preventDefault(); // Prevent default action if it's a link
-//             console.log('Play button clicked! Opening YouTube video in iframe...');
-            
-//             // Create a video overlay container if it doesn't exist
-//             let videoOverlay = document.getElementById('videoOverlay');
-//             if (!videoOverlay) {
-//                 videoOverlay = document.createElement('div');
-//                 videoOverlay.id = 'videoOverlay';
-//                 videoOverlay.className = 'video-overlay';
-//                 document.body.appendChild(videoOverlay);
-                
-//                 // Add styles for the overlay
-//                 const style = document.createElement('style');
-//                 style.textContent = `
-//                     .video-overlay {
-//                         position: fixed;
-//                         top: 0;
-//                         left: 0;
-//                         width: 100%;
-//                         height: 100%;
-//                         background-color: rgba(0, 0, 0, 0.9);
-//                         z-index: 2000;
-//                         display: flex;
-//                         justify-content: center;
-//                         align-items: center;
-//                         flex-direction: column;
-//                     }
-//                     .video-container {
-//                         width: 80%;
-//                         max-width: 800px;
-//                         position: relative;
-//                         padding-bottom: 45%; /* 16:9 aspect ratio */
-//                     }
-//                     .video-container iframe {
-//                         position: absolute;
-//                         top: 0;
-//                         left: 0;
-//                         width: 100%;
-//                         height: 100%;
-//                         border: none;
-//                     }
-//                     .close-video {
-//                         position: absolute;
-//                         top: 20px;
-//                         right: 20px;
-//                         color: #fff;
-//                         font-size: 30px;
-//                         cursor: pointer;
-//                         background: var(--primary-color);
-//                         border: none;
-//                         border-radius: 50%;
-//                         width: 40px;
-//                         height: 40px;
-//                         display: flex;
-//                         align-items: center;
-//                         justify-content: center;
-//                     }
-//                 `;
-//                 document.head.appendChild(style);
-//             }
-            
-//             // Clear any existing content
-//             videoOverlay.innerHTML = '';
-            
-//             // Create close button
-//             const closeButton = document.createElement('button');
-//             closeButton.className = 'close-video';
-//             closeButton.innerHTML = '&times;';
-//             closeButton.addEventListener('click', function() {
-//                 videoOverlay.style.display = 'none';
-//                 // Pause the video when closed (by reloading iframe src)
-//                 const iframe = document.querySelector('#videoOverlay iframe');
-//                 if (iframe) {
-//                     const src = iframe.src;
-//                     iframe.src = src;
-//                 }
-//             });
-            
-//             // Create video container
-//             const videoContainer = document.createElement('div');
-//             videoContainer.className = 'video-container';
-            
-//             // Create iframe for YouTube video
-//             const iframe = document.createElement('iframe');
-//             iframe.src = `https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1`;
-//             iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-//             iframe.allowFullscreen = true;
-            
-//             // Append elements
-//             videoContainer.appendChild(iframe);
-//             videoOverlay.appendChild(closeButton);
-//             videoOverlay.appendChild(videoContainer);
-            
-//             // Show the overlay
-//             videoOverlay.style.display = 'flex';
-//         });
-//     });
-    
-//     console.log('Play buttons initialized!');
-// }
-
-// Call the function when the DOM is fully loaded
-// document.addEventListener('DOMContentLoaded', setupPlayButtons);
-
-//    };
-//});
-
+// TRANSITION AND AUTOCOMPLETE
 function transitionTo(url){
     const overlay = document.querySelector(".transition-overlay");
     overlay.style.animation = 'slideIn 0.1s ease-in-out';
@@ -865,14 +832,111 @@ function setupSimpleAutoComplete(){
     });
 }
 
-// after opening the movie detail
-// save to local storage the movie.
-// later if user want to check they can easily see the title. And if hit the info will show up
-/*
-if (movie exist)
-    let historyList = json.parrse(localStorage.get history)
-    if (moive in history) no no no
-    movie push and remove the last one, so there's only like 10
-    watchlist.filter last or something
+// HISTORY FUNCTIONS
+function getHistory(){
+    return JSON.parse(localStorage.getItem('movieHistory')) || [];
+}
 
-*/
+function addToHistory(movie){
+    if(!movie || !movie.id){
+        console.log("Movie is invalid")
+        return;
+    }
+
+    let history = getHistory();
+    history = history.filter(item=> item.id != movie.id);
+
+    const historyItem = {
+        ...movie, 
+        viewedAt: new Date().toISOString()
+    }
+
+    history.unshift(historyItem);
+
+    if (history.length > 20){
+        history = history.slice(0, 20);
+    }
+
+    localStorage.setItem('movieHistory', JSON.stringify(history));
+    console.log(`${movie.title} added to history`);
+}
+
+function clearHistory() {
+    localStorage.removeItem('movieHistory');
+    console.log("History cleared");
+    
+    // Refresh the history page
+    renderHistory();
+}
+
+function renderHistory() {
+    console.log("HISTORY PAGE OPENED");
+    const historyContainer = document.getElementById("historyContainer");
+    
+    if (historyContainer) {
+        historyContainer.innerHTML = '';
+        
+        const history = getHistory();
+        console.log("History items:", history.length);
+        
+        if (history.length === 0) {
+            historyContainer.innerHTML = '<p class="empty-message">Your viewing history is empty.</p>';
+        } else {
+            // Add clear history button at the top
+            const clearButton = document.createElement('button');
+            clearButton.className = 'clear-history-btn';
+            clearButton.textContent = 'Clear History';
+            clearButton.addEventListener('click', clearHistory);
+            
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.textAlign = 'center';
+            buttonContainer.style.marginBottom = '20px';
+            buttonContainer.appendChild(clearButton);
+            
+            // Insert button before the container
+            historyContainer.parentNode.insertBefore(buttonContainer, historyContainer);
+            
+            // Render all history items
+            history.forEach((movie) => {
+                const card = document.createElement('div');
+                card.className = 'movie-card';
+                
+                // Add click event to show details
+                card.addEventListener('click', () => showMovieDetails(movie));
+                
+                const rating = Math.round(movie.vote_average * 10) / 10;
+                
+                // Format the date for display
+                let timeDisplay = 'Recently viewed';
+                if (movie.viewedAt) {
+                    const viewDate = new Date(movie.viewedAt);
+                    const options = { 
+                        month: 'short', 
+                        day: 'numeric',
+                        hour: '2-digit', 
+                        minute: '2-digit'
+                    };
+                    timeDisplay = `Viewed: ${viewDate.toLocaleDateString('en-US', options)}`;
+                }
+                
+                card.innerHTML = `
+                    <img src="${movie.poster_path ? IMAGE_BASE_URL + movie.poster_path : 'https://placehold.co/150x225/808080/FFFFFF.png?text=No+Image'}" 
+                    alt="${movie.title}">
+                    <div class="rating">${rating}</div>
+                    <div class="movie-info">
+                        <h3 class="movie-title">${movie.title}</h3>
+                        <p class="movie-year">${movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A'}</p>
+                        <p class="movie-timestamp">${timeDisplay}</p>
+                    </div>
+                `;
+                
+                historyContainer.appendChild(card);
+            });
+        }
+    } else {
+        console.error("History container not found!");
+    }
+}
+
+// Initialize app when DOM is loaded
+document.addEventListener('DOMContentLoaded', init);

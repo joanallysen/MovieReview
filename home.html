@@ -22,6 +22,7 @@
             <input type="text" id="searchInput" placeholder="Search...">
             <datalist id="movieSuggestions"></datalist>
             <button id="searchBtn">Search</button>
+            <button id="adultFilterBtn"> Adult : On</button>
         </div>
     </header>
 
@@ -42,7 +43,7 @@
             <div class="loader" id="trendingLoader"></div>
             <!-- Movies will be added here dynamically -->
         </div>
-       
+    
         <h2 class="category-title">Popular Movies</h2>
         <div class="movie-row" id="popularMovies">
             <div class="loader" id="popularLoader"></div>
@@ -80,6 +81,7 @@
     <nav class="nav-bottom" id="nav-bottom">
         <a onclick="transitionTo('intro.html')"><img src="img/home.svg" alt="Home"></a>
         <a onclick="transitionTo('watchlist.html')"><img src="img/watchlist.svg" alt="Watchlist"></a>
+        <a onclick="transitionTo('history.html')"><img src="img/history.svg" alt="History"></a>
     </nav>
 
     <script src="script.js"></script>
